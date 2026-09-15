@@ -204,8 +204,8 @@
     <script>
         // ⚠️ À REMPLACER PAR VOS VALEURS
         const GITHUB_CONFIG = {
-            owner: 'VOTRE_USERNAME',           // Votre username GitHub
-            repo: 'questionnaire-2026',         // Nom du repo de stockage
+            owner: 'AAMB-AccesControle',           // Votre username GitHub
+            repo: 'Questionnaire_Partenaires_APP',         // Nom du repo de stockage
             branch: 'main'
         };
 
@@ -330,7 +330,6 @@
         }
 
         async function saveToGitHub(data) {
-            // On envoie via repository_dispatch à GitHub Actions
             const response = await fetch(
                 `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/dispatches`,
                 {
