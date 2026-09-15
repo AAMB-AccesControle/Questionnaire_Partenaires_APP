@@ -202,10 +202,9 @@
     </div>
 
     <script>
-        // ⚠️ À REMPLACER PAR VOS VALEURS
         const GITHUB_CONFIG = {
-            owner: 'AAMB-AccesControle',           // Votre username GitHub
-            repo: 'Questionnaire_Partenaires_APP',         // Nom du repo de stockage
+            owner: 'AAMB-AccesControle',
+            repo: 'Questionnaire_Partenaires_APP',
             branch: 'main'
         };
 
@@ -331,7 +330,7 @@
 
         async function saveToGitHub(data) {
             const response = await fetch(
-                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/dispatches`,
+                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/issues`,
                 {
                     method: 'POST',
                     headers: {
@@ -339,19 +338,20 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        event_type: 'save-submission',
-                        client_payload: {
-                            data: data,
-                            edit_mode: isEditMode
-                        }
+                        title: `SUBMISSION: ${data.token}`,
+                        body: JSON.stringify(data, null, 2),
+                        labels: ['submission']
                     })
                 }
             );
             
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(`Erreur: ${err.message || response.status}`);
+                throw new Error(`Erreur GitHub: ${err.message || response.status}`);
             }
+            
+            // Attendre que GitHub Actions traite l'issue
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
 
         async function sendEmail(data) {
@@ -370,7 +370,6 @@
         async function loadExistingData(token) {
             try {
                 const filename = `submissions/${token}.json`;
-                // Utiliser l'URL raw de GitHub (publique, pas besoin de token)
                 const rawUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${filename}`;
                 
                 const response = await fetch(rawUrl);
@@ -378,7 +377,6 @@
                 
                 const data = await response.json();
                 
-                // Remplir les champs
                 document.getElementById('company').value = data.company || '';
                 document.getElementById('firstname').value = data.firstname || '';
                 document.getElementById('lastname').value = data.lastname || '';
