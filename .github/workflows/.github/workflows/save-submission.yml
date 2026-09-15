@@ -1,0 +1,30 @@
+name: Save Submission
+
+on:
+  repository_dispatch:
+    types: [save-submission]
+
+permissions:
+  contents: write
+
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Save submission
+        env:
+          TOKEN: ${{ github.token }}
+          DATA: ${{ github.event.client_payload.data }}
+        run: |
+          mkdir -p submissions
+          SUB_TOKEN=$(echo "$DATA" | jq -r '.token')
+          FILENAME="submissions/${SUB_TOKEN}.json"
+          echo "$DATA" | jq '.' > "$FILENAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$FILENAME"
+          git commit -m "Nouvelle soumission: ${SUB_TOKEN}" || echo "No changes"
+          git push
