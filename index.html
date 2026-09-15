@@ -206,7 +206,6 @@
         const GITHUB_CONFIG = {
             owner: 'VOTRE_USERNAME',           // Votre username GitHub
             repo: 'questionnaire-2026',         // Nom du repo de stockage
-            token: 'ghp_VOTRE_TOKEN_ICI',       // Le token créé à l'étape 1.4
             branch: 'main'
         };
 
@@ -331,42 +330,28 @@
         }
 
         async function saveToGitHub(data) {
-            const filename = `submissions/${data.token}.json`;
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-            
-            let sha = null;
-            if (isEditMode) {
-                try {
-                    const r = await fetch(
-                        `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filename}`,
-                        { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' } }
-                    );
-                    if (r.ok) sha = (await r.json()).sha;
-                } catch (e) {}
-            }
-            
-            const body = {
-                message: isEditMode ? `MAJ: ${data.company}` : `Nouveau: ${data.company}`,
-                content, branch: GITHUB_CONFIG.branch
-            };
-            if (sha) body.sha = sha;
-            
+            // On envoie via repository_dispatch à GitHub Actions
             const response = await fetch(
-                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filename}`,
+                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/dispatches`,
                 {
-                    method: 'PUT',
+                    method: 'POST',
                     headers: {
-                        'Authorization': `token ${GITHUB_CONFIG.token}`,
                         'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        event_type: 'save-submission',
+                        client_payload: {
+                            data: data,
+                            edit_mode: isEditMode
+                        }
+                    })
                 }
             );
             
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(`GitHub: ${err.message || response.status}`);
+                throw new Error(`Erreur: ${err.message || response.status}`);
             }
         }
 
@@ -386,21 +371,20 @@
         async function loadExistingData(token) {
             try {
                 const filename = `submissions/${token}.json`;
-                const response = await fetch(
-                    `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filename}`,
-                    { headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' } }
-                );
+                // Utiliser l'URL raw de GitHub (publique, pas besoin de token)
+                const rawUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${filename}`;
+                
+                const response = await fetch(rawUrl);
                 if (!response.ok) throw new Error('Données non trouvées');
                 
-                const fileData = await response.json();
-                const content = decodeURIComponent(escape(atob(fileData.content)));
-                const data = JSON.parse(content);
+                const data = await response.json();
                 
+                // Remplir les champs
                 document.getElementById('company').value = data.company || '';
                 document.getElementById('firstname').value = data.firstname || '';
                 document.getElementById('lastname').value = data.lastname || '';
                 document.getElementById('email').value = data.email || '';
-
+        
                 for (let i = 1; i <= 4; i++) {
                     initAnswers(i);
                     if (data.questions && data.questions[i-1]) {
@@ -417,7 +401,7 @@
                         }
                     }
                 }
-
+        
                 document.getElementById('identification-section').classList.add('hidden');
                 document.getElementById('questions-section').classList.remove('hidden');
                 document.getElementById('message-container').innerHTML = `
