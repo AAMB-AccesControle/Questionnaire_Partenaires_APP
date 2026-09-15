@@ -1,0 +1,41 @@
+name: Save Submission
+
+on:
+  repository_dispatch:
+    types: [save-submission]
+
+permissions:
+  contents: write
+
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Save submission
+        env:
+          TOKEN: ${{ github.token }}
+          DATA: ${{ github.event.client_payload.data }}
+          EDIT_MODE: ${{ github.event.client_payload.edit_mode }}
+        run: |
+          # Créer le dossier submissions s'il n'existe pas
+          mkdir -p submissions
+          
+          # Extraire le token de soumission et les données
+          SUB_TOKEN=$(echo "$DATA" | jq -r '.token')
+          FILENAME="submissions/${SUB_TOKEN}.json"
+          
+          # Si mode édition, le fichier existe déjà
+          # Sinon on crée un nouveau fichier
+          echo "$DATA" | jq '.' > "$FILENAME"
+          
+          # Configurer git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Commit et push
+          git add "$FILENAME"
+          git commit -m "Nouvelle soumission: ${SUB_TOKEN}" || echo "No changes"
+          git push
