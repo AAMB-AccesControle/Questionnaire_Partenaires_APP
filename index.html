@@ -8,190 +8,74 @@
     <meta name="theme-color" content="#667eea">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
         .header h1 { font-size: 2em; margin-bottom: 10px; }
         .content { padding: 40px; }
         .form-group { margin-bottom: 25px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        .form-group input, .question-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-        .form-group input:focus, .question-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .question-section {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 5px solid #667eea;
-        }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-group input, .question-input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; }
+        .form-group input:focus, .question-input:focus { outline: none; border-color: #667eea; }
+        .question-section { background: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px; border-left: 5px solid #667eea; }
         .question-section h3 { color: #667eea; margin-bottom: 15px; }
-        .question-input {
-            margin-bottom: 20px;
-            resize: vertical;
-            min-height: 80px;
-        }
+        .question-input { margin-bottom: 20px; resize: vertical; min-height: 80px; }
         .answers-container { display: grid; gap: 12px; }
-        .answer-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-        }
-        .answer-item input[type="text"] {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-        }
-        .answer-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
+        .answer-item { display: flex; align-items: center; gap: 12px; background: white; padding: 12px 15px; border-radius: 8px; border: 2px solid #e0e0e0; }
+        .answer-item input[type="text"] { flex: 1; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 6px; }
+        .answer-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #667eea; }
+        .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,126,234,0.4); }
         .btn-secondary { background: #6c757d; margin-top: 10px; }
         .hidden { display: none; }
-        .success-message, .error-message {
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            border-left: 5px solid #28a745;
-        }
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            border-left: 5px solid #dc3545;
-        }
+        .success-message, .error-message { padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .success-message { background: #d4edda; color: #155724; border-left: 5px solid #28a745; }
+        .error-message { background: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; }
         .loading { text-align: center; padding: 40px; }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .test-mode-banner {
-            background: #ff9800;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
+        .test-banner { background: #ff9800; color: white; padding: 10px; text-align: center; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="test-banner" class="test-mode-banner hidden">
-            🧪 MODE TEST - Champs pré-remplis automatiquement
-        </div>
-        
+        <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation 1.001</h1>
+            <h1>📋 Questionnaire d'Évaluation v.0.01</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
         <div class="content">
             <div id="identification-section">
-                <div class="form-group">
-                    <label for="company">Nom de la société *</label>
-                    <input type="text" id="company" required>
-                </div>
-                <div class="form-group">
-                    <label for="firstname">Prénom *</label>
-                    <input type="text" id="firstname" required>
-                </div>
-                <div class="form-group">
-                    <label for="lastname">Nom *</label>
-                    <input type="text" id="lastname" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Adresse email *</label>
-                    <input type="email" id="email" required>
-                </div>
+                <div class="form-group"><label for="company">Nom de la société *</label><input type="text" id="company" required></div>
+                <div class="form-group"><label for="firstname">Prénom *</label><input type="text" id="firstname" required></div>
+                <div class="form-group"><label for="lastname">Nom *</label><input type="text" id="lastname" required></div>
+                <div class="form-group"><label for="email">Adresse email *</label><input type="email" id="email" required></div>
                 <button class="btn" onclick="showQuestions()">Continuer →</button>
             </div>
 
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
-                
                 <div class="question-section">
                     <h3>Question 1</h3>
                     <textarea class="question-input" id="q1" placeholder="Saisissez votre question..."></textarea>
                     <div class="answers-container" id="answers1"></div>
                 </div>
-
                 <div class="question-section">
                     <h3>Question 2</h3>
                     <textarea class="question-input" id="q2" placeholder="Saisissez votre question..."></textarea>
                     <div class="answers-container" id="answers2"></div>
                 </div>
-
                 <div class="question-section">
                     <h3>Question 3</h3>
                     <textarea class="question-input" id="q3" placeholder="Saisissez votre question..."></textarea>
                     <div class="answers-container" id="answers3"></div>
                 </div>
-
                 <div class="question-section">
                     <h3>Question 4</h3>
                     <textarea class="question-input" id="q4" placeholder="Saisissez votre question..."></textarea>
                     <div class="answers-container" id="answers4"></div>
                 </div>
-
                 <button class="btn" onclick="validateAndSubmit()">✓ Valider et envoyer</button>
                 <button class="btn btn-secondary" onclick="showIdentification()">← Retour</button>
             </div>
@@ -213,7 +97,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz07OVI31VRt9ohBzXpgnzl2YsnqaDGAATFMiXobBRUwaf-nQq4iwWHPFJO9WwLhI-KDw/exec';
+        // ⚠️ REMPLACEZ CECI PAR VOTRE NOUVELLE URL DE DÉPLOIEMENT
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweDXyWcY6D2Eg9LvoF_ZoJWPy0-D7_m4rR3jFoMI0BNkihsgipYfbn-q3XxfteDR8oRw/exec';
         
         let editToken = '';
         let isEditMode = false;
@@ -223,67 +108,46 @@
             const urlParams = new URLSearchParams(window.location.search);
             editToken = urlParams.get('token');
             
-            // Mode test : pré-remplir automatiquement
+            // MODE TEST : Si l'URL contient ?test=1, on pré-remplit tout
             if (urlParams.get('test') === '1') {
                 isTestMode = true;
-                document.getElementById('test-banner').classList.remove('hidden');
+                document.getElementById('test-banner').style.display = 'block';
                 fillTestData();
-            }
-            
-            if (editToken) {
+            } else if (editToken) {
                 isEditMode = true;
                 loadExistingData(editToken);
-            } else if (!isTestMode) {
+            } else {
                 for (let i = 1; i <= 4; i++) initAnswers(i);
             }
         };
 
         function fillTestData() {
-            // Remplir les champs d'identification
             document.getElementById('company').value = 'Société Test SARL';
             document.getElementById('firstname').value = 'Jean';
             document.getElementById('lastname').value = 'Dupont';
-            document.getElementById('email').value = 'test@example.com';
+            document.getElementById('email').value = 'VOTRE_EMAIL_ICI'; // Mettez votre email ici pour les tests
             
-            // Questions pré-remplies
-            const testQuestions = [
-                'Quelle est la capitale de la France ?',
-                'Combien font 2 + 2 ?',
-                'Quel est le plus grand océan du monde ?',
-                'Qui a peint la Joconde ?'
-            ];
-            
-            // Réponses pré-remplies (avec les bonnes réponses indiquées)
+            const testQuestions = ['Capitale de la France ?', '2 + 2 = ?', 'Plus grand océan ?', 'Peintre de la Joconde ?'];
             const testAnswers = [
-                { answers: ['Paris', 'Lyon', 'Marseille'], correct: [0, 1, 2] }, // Paris = bonne
-                { answers: ['3', '4', '5'], correct: [1, 2, 3] }, // 4 = bonne
-                { answers: ['Atlantique', 'Pacifique', 'Indien', 'Arctique'], correct: [0, 1, 2, 3] }, // Pacifique = bonne
-                { answers: ['Van Gogh', 'Léonard de Vinci', 'Picasso'], correct: [0, 1, 2] } // Léonard de Vinci = bonne
+                { ans: ['Paris', 'Lyon'], corr: [true, false] },
+                { ans: ['3', '4', '5'], corr: [false, true, false] },
+                { ans: ['Atlantique', 'Pacifique'], corr: [false, true] },
+                { ans: ['Van Gogh', 'Léonard de Vinci'], corr: [false, true] }
             ];
             
-            // Remplir les questions et réponses
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`q${i}`).value = testQuestions[i-1];
                 initAnswers(i);
-                
                 const container = document.getElementById(`answers${i}`);
                 const data = testAnswers[i-1];
                 
-                for (let j = 0; j < 8; j++) {
-                    if (j < data.answers.length) {
-                        const input = container.children[j].querySelector('input[type="text"]');
-                        const checkbox = container.children[j].querySelector('input[type="checkbox"]');
-                        
-                        input.value = data.answers[j];
-                        checkbox.checked = data.correct.includes(j);
-                    }
+                for (let j = 0; j < data.ans.length; j++) {
+                    const inputs = container.children[j].querySelectorAll('input');
+                    inputs[1].value = data.ans[j]; // Input texte
+                    inputs[0].checked = data.corr[j]; // Checkbox
                 }
             }
-            
-            // Passer directement aux questions
-            setTimeout(() => {
-                showQuestions();
-            }, 500);
+            setTimeout(() => showQuestions(), 300);
         }
 
         function initAnswers(questionNum) {
@@ -292,11 +156,7 @@
             for (let i = 1; i <= 8; i++) {
                 const div = document.createElement('div');
                 div.className = 'answer-item';
-                div.innerHTML = `
-                    <input type="checkbox" id="q${questionNum}a${i}_check" title="Bonne réponse">
-                    <input type="text" id="q${questionNum}a${i}" placeholder="Proposition ${i}">
-                    <label for="q${questionNum}a${i}_check">Bonne réponse</label>
-                `;
+                div.innerHTML = `<input type="checkbox" id="q${questionNum}a${i}_check" title="Bonne réponse"><input type="text" id="q${questionNum}a${i}" placeholder="Proposition ${i}"><label for="q${questionNum}a${i}_check">Bonne réponse</label>`;
                 container.appendChild(div);
             }
         }
@@ -306,16 +166,8 @@
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
             const email = document.getElementById('email').value.trim();
-
-            if (!company || !firstname || !lastname || !email) {
-                alert('Veuillez remplir tous les champs');
-                return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Email invalide');
-                return;
-            }
-
+            if (!company || !firstname || !lastname || !email) { alert('Veuillez remplir tous les champs'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Email invalide'); return; }
             document.getElementById('identification-section').classList.add('hidden');
             document.getElementById('questions-section').classList.remove('hidden');
         }
@@ -327,18 +179,12 @@
 
         async function validateAndSubmit() {
             const questions = [], answers = [], correctAnswers = [];
-
             for (let i = 1; i <= 4; i++) {
                 const question = document.getElementById(`q${i}`).value.trim();
-                if (!question) {
-                    alert(`Veuillez saisir la question ${i}`);
-                    return;
-                }
+                if (!question) { alert(`Veuillez saisir la question ${i}`); return; }
                 questions.push(question);
-
                 const qAnswers = [], qCorrect = [];
                 let hasCorrect = false;
-
                 for (let j = 1; j <= 8; j++) {
                     const answer = document.getElementById(`q${i}a${j}`).value.trim();
                     const isCorrect = document.getElementById(`q${i}a${j}_check`).checked;
@@ -346,12 +192,7 @@
                     qCorrect.push(isCorrect ? 'OUI' : 'NON');
                     if (isCorrect) hasCorrect = true;
                 }
-
-                if (!hasCorrect) {
-                    alert(`Cochez au moins une bonne réponse pour la question ${i}`);
-                    return;
-                }
-
+                if (!hasCorrect) { alert(`Cochez au moins une bonne réponse pour la question ${i}`); return; }
                 answers.push(qAnswers);
                 correctAnswers.push(qCorrect);
             }
@@ -364,9 +205,7 @@
                 firstname: document.getElementById('firstname').value.trim(),
                 lastname: document.getElementById('lastname').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                questions: questions,
-                answers: answers,
-                correctAnswers: correctAnswers
+                questions, answers, correctAnswers
             };
 
             document.getElementById('questions-section').classList.add('hidden');
@@ -374,20 +213,13 @@
 
             try {
                 await saveData(data);
-                
                 document.getElementById('loading-section').classList.add('hidden');
                 document.getElementById('success-section').classList.remove('hidden');
                 editToken = data.token;
             } catch (error) {
                 document.getElementById('loading-section').classList.add('hidden');
                 document.getElementById('questions-section').classList.remove('hidden');
-                document.getElementById('message-container').innerHTML = `
-                    <div class="error-message">
-                        <h3>❌ Erreur</h3>
-                        <p>${error.message}</p>
-                        <p>Veuillez réessayer.</p>
-                    </div>
-                `;
+                document.getElementById('message-container').innerHTML = `<div class="error-message"><h3>❌ Erreur</h3><p>${error.message}</p></div>`;
             }
         }
 
@@ -395,12 +227,9 @@
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain'
-                },
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(data)
             });
-            
             return true;
         }
 
@@ -408,10 +237,8 @@
             try {
                 const response = await fetch(`${SCRIPT_URL}?token=${token}`);
                 if (!response.ok) throw new Error('Données non trouvées');
-                
                 const result = await response.json();
                 if (!result.success) throw new Error(result.error || 'Token non trouvé');
-                
                 const data = result.data;
                 
                 document.getElementById('company').value = data.company || '';
@@ -421,58 +248,40 @@
 
                 for (let i = 1; i <= 4; i++) {
                     initAnswers(i);
-                    if (data.questions && data.questions[i-1]) {
-                        document.getElementById(`q${i}`).value = data.questions[i-1];
-                    }
+                    if (data.questions && data.questions[i-1]) document.getElementById(`q${i}`).value = data.questions[i-1];
                     if (data.answers && data.answers[i-1]) {
                         for (let j = 1; j <= 8; j++) {
-                            if (data.answers[i-1][j-1]) {
-                                document.getElementById(`q${i}a${j}`).value = data.answers[i-1][j-1];
-                            }
+                            if (data.answers[i-1][j-1]) document.getElementById(`q${i}a${j}`).value = data.answers[i-1][j-1];
                             if (data.correctAnswers && data.correctAnswers[i-1] && data.correctAnswers[i-1][j-1] === 'OUI') {
                                 document.getElementById(`q${i}a${j}_check`).checked = true;
                             }
                         }
                     }
                 }
-
                 document.getElementById('identification-section').classList.add('hidden');
                 document.getElementById('questions-section').classList.remove('hidden');
-                document.getElementById('message-container').innerHTML = `
-                    <div class="success-message">
-                        <h3> Mode Édition</h3>
-                        <p>Modifiez et validez pour mettre à jour.</p>
-                    </div>
-                `;
+                document.getElementById('message-container').innerHTML = `<div class="success-message"><h3>📝 Mode Édition</h3><p>Modifiez et validez pour mettre à jour.</p></div>`;
             } catch (error) {
                 alert('Erreur: ' + error.message);
                 for (let i = 1; i <= 4; i++) initAnswers(i);
             }
         }
 
-        function generateToken() {
-            return 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        }
+        function generateToken() { return 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
 
         function resetForm() {
-            editToken = '';
-            isEditMode = false;
+            editToken = ''; isEditMode = false;
             document.getElementById('company').value = '';
             document.getElementById('firstname').value = '';
             document.getElementById('lastname').value = '';
             document.getElementById('email').value = '';
-            for (let i = 1; i <= 4; i++) {
-                document.getElementById(`q${i}`).value = '';
-                initAnswers(i);
-            }
+            for (let i = 1; i <= 4; i++) { document.getElementById(`q${i}`).value = ''; initAnswers(i); }
             document.getElementById('success-section').classList.add('hidden');
             document.getElementById('identification-section').classList.remove('hidden');
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
     </script>
 </body>
 </html>
