@@ -41,7 +41,7 @@
     <div class="container">
         <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.0.26</h1>
+            <h1>📋 Questionnaire d'Évaluation v.0.28</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
@@ -57,11 +57,11 @@
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
                 
-                <!-- INSTRUCTION AJOUTÉE -->
+                <!-- INSTRUCTION MISE À JOUR -->
                 <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
                     <p style="margin: 0; color: #856404;">
                         <strong>📝 Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
-                        <br><strong>⚠️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée</u>.
+                        <br><strong>⚠️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée parmi les propositions saisies</u>.
                     </p>
                 </div>
                 <!-- FIN INSTRUCTION -->
@@ -116,9 +116,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             editToken = urlParams.get('token');
             
-            console.log('🔍 Token détecté:', editToken);
-            console.log('URL complète:', window.location.href);
-            
             if (editToken) {
                 isEditMode = true;
                 loadExistingData(editToken);
@@ -133,6 +130,7 @@
             document.getElementById('lastname').value = 'Dupont';
             document.getElementById('email').value = 'sedric.blin@aamb.asso.fr';
             
+            // Test data avec exactement 3 propositions et 1 coche par question pour valider la règle
             const testQuestions = ['Capitale de la France ?', '2 + 2 = ?', 'Plus grand océan ?', 'Peintre de la Joconde ?'];
             const testAnswers = [
                 { ans: ['Paris', 'Lyon', 'Marseille'], corr: [true, false, false] },
@@ -194,26 +192,35 @@
                 questions.push(question);
 
                 const qAnswers = [], qCorrect = [];
-                let hasCorrect = false;
-                let answerCount = 0;
+                let filledCount = 0;
+                let checkedFilledCount = 0;
 
                 for (let j = 1; j <= 8; j++) {
                     const answer = document.getElementById(`q${i}a${j}`).value.trim();
                     const isCorrect = document.getElementById(`q${i}a${j}_check`).checked;
+                    
                     qAnswers.push(answer);
                     qCorrect.push(isCorrect ? 'OUI' : 'NON');
                     
-                    if (isCorrect) hasCorrect = true;
-                    if (answer) answerCount++;
+                    // On ne compte que si la proposition est remplie
+                    if (answer) {
+                        filledCount++;
+                        // Et on vérifie si SA case correspondante est cochée
+                        if (isCorrect) {
+                            checkedFilledCount++;
+                        }
+                    }
                 }
 
-                if (answerCount < 3) {
-                    alert(`⚠️ La question ${i} doit contenir au moins 3 propositions. (Actuellement : ${answerCount})`);
+                // Règle 1 : Au moins 3 propositions remplies
+                if (filledCount < 3) {
+                    alert(`⚠️ La question ${i} doit contenir au moins 3 propositions. (Actuellement : ${filledCount})`);
                     return;
                 }
 
-                if (!hasCorrect) {
-                    alert(`⚠️ Vous devez cocher au moins une bonne réponse pour la question ${i}`);
+                // Règle 2 : Au moins 1 case cochée PARMI les propositions remplies
+                if (checkedFilledCount === 0) {
+                    alert(`⚠️ Vous devez cocher au moins une bonne réponse parmi les propositions que vous avez saisies pour la question ${i}.`);
                     return;
                 }
 
