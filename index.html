@@ -41,7 +41,7 @@
     <div class="container">
         <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.0.25</h1>
+            <h1>📋 Questionnaire d'Évaluation v.0.26</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
@@ -56,14 +56,14 @@
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
                 
-                <!-- INSTRUCTION AJOUTÉE -->
-                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                    <p style="margin: 0; color: #856404;">
-                        <strong> Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
-                        Plusieurs propositions peuvent être correctes pour une même question.
-                    </p>
-                </div>
-                <!-- FIN INSTRUCTION -->
+            <!-- INSTRUCTION AJOUTÉE -->
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                <p style="margin: 0; color: #856404;">
+                    <strong>📝 Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
+                    <br><strong>️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée</u>.
+                </p>
+            </div>
+            <!-- FIN INSTRUCTION -->
                 
                 <div class="question-section">
                     <h3>Question 1</h3>
@@ -188,23 +188,70 @@
 
         async function validateAndSubmit() {
             const questions = [], answers = [], correctAnswers = [];
+            
             for (let i = 1; i <= 4; i++) {
                 const question = document.getElementById(`q${i}`).value.trim();
-                if (!question) { alert(`Veuillez saisir la question ${i}`); return; }
+                if (!question) { 
+                    alert(`Veuillez saisir la question ${i}`); 
+                    return; 
+                }
                 questions.push(question);
+
                 const qAnswers = [], qCorrect = [];
                 let hasCorrect = false;
+                let answerCount = 0; // Compteur de propositions remplies
+
                 for (let j = 1; j <= 8; j++) {
                     const answer = document.getElementById(`q${i}a${j}`).value.trim();
                     const isCorrect = document.getElementById(`q${i}a${j}_check`).checked;
                     qAnswers.push(answer);
                     qCorrect.push(isCorrect ? 'OUI' : 'NON');
+                    
                     if (isCorrect) hasCorrect = true;
+                    if (answer) answerCount++; // On compte les propositions non vides
                 }
-                if (!hasCorrect) { alert(`Cochez au moins une bonne réponse pour la question ${i}`); return; }
+
+                // NOUVELLE VÉRIFICATION : Au moins 3 propositions
+                if (answerCount < 3) {
+                    alert(`⚠️ La question ${i} doit contenir au moins 3 propositions. (Actuellement : ${answerCount})`);
+                    return;
+                }
+
+                // VÉRIFICATION EXISTANTE : Au moins 1 bonne réponse
+                if (!hasCorrect) {
+                    alert(`️ Vous devez cocher au moins une bonne réponse pour la question ${i}`);
+                    return;
+                }
+
                 answers.push(qAnswers);
                 correctAnswers.push(qCorrect);
             }
+
+            const data = {
+                token: editToken || generateToken(),
+                timestamp: new Date().toISOString(),
+                action: isEditMode ? 'update' : 'create',
+                company: document.getElementById('company').value.trim(),
+                firstname: document.getElementById('firstname').value.trim(),
+                lastname: document.getElementById('lastname').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                questions, answers, correctAnswers
+            };
+
+            document.getElementById('questions-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.remove('hidden');
+
+            try {
+                await saveData(data);
+                document.getElementById('loading-section').classList.add('hidden');
+                document.getElementById('success-section').classList.remove('hidden');
+                editToken = data.token;
+            } catch (error) {
+                document.getElementById('loading-section').classList.add('hidden');
+                document.getElementById('questions-section').classList.remove('hidden');
+                document.getElementById('message-container').innerHTML = `<div class="error-message"><h3>❌ Erreur</h3><p>${error.message}</p></div>`;
+            }
+        }
 
             const data = {
                 token: editToken || generateToken(),
