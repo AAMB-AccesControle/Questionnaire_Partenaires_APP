@@ -53,17 +53,18 @@
                 <div class="form-group"><label for="email">Adresse email *</label><input type="email" id="email" required></div>
                 <button class="btn" onclick="showQuestions()">Continuer →</button>
             </div>
+            
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
                 
-            <!-- INSTRUCTION AJOUTÉE -->
-            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                <p style="margin: 0; color: #856404;">
-                    <strong>📝 Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
-                    <br><strong>️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée</u>.
-                </p>
-            </div>
-            <!-- FIN INSTRUCTION -->
+                <!-- INSTRUCTION AJOUTÉE -->
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; color: #856404;">
+                        <strong>📝 Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
+                        <br><strong>⚠️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée</u>.
+                    </p>
+                </div>
+                <!-- FIN INSTRUCTION -->
                 
                 <div class="question-section">
                     <h3>Question 1</h3>
@@ -105,7 +106,6 @@
     </div>
 
     <script>
-        // ⚠️ REMPLACEZ CECI PAR VOTRE NOUVELLE URL DE DÉPLOIEMENT
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsOTnc1Le4KaCqcLLW1WG-rw7Oo_lTbBth2lZ-X-PY85EMhJqvqqyD7ET8L4KISJBQ3Q/exec';
 
         let editToken = '';
@@ -116,8 +116,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             editToken = urlParams.get('token');
             
-            console.log('🔍 Token détecté:', editToken);  // ← AJOUTEZ CETTE LIGNE
-            console.log('URL complète:', window.location.href);  // ← ET CETTE LIGNE
+            console.log('🔍 Token détecté:', editToken);
+            console.log('URL complète:', window.location.href);
             
             if (editToken) {
                 isEditMode = true;
@@ -135,10 +135,10 @@
             
             const testQuestions = ['Capitale de la France ?', '2 + 2 = ?', 'Plus grand océan ?', 'Peintre de la Joconde ?'];
             const testAnswers = [
-                { ans: ['Paris', 'Lyon'], corr: [true, false] },
+                { ans: ['Paris', 'Lyon', 'Marseille'], corr: [true, false, false] },
                 { ans: ['3', '4', '5'], corr: [false, true, false] },
-                { ans: ['Atlantique', 'Pacifique'], corr: [false, true] },
-                { ans: ['Van Gogh', 'Léonard de Vinci'], corr: [false, true] }
+                { ans: ['Atlantique', 'Pacifique', 'Indien'], corr: [false, true, false] },
+                { ans: ['Van Gogh', 'Léonard de Vinci', 'Picasso'], corr: [false, true, false] }
             ];
             
             for (let i = 1; i <= 4; i++) {
@@ -153,7 +153,6 @@
                     inputs[0].checked = data.corr[j];
                 }
             }
-            // setTimeout(() => showQuestions(), 300);  ← COMMENTEZ OU SUPPRIMEZ CETTE LIGNE
         }
 
         function initAnswers(questionNum) {
@@ -167,10 +166,7 @@
             }
         }
 
-
         function showQuestions() {
-            console.log(' showQuestions() appelé !');
-            console.log('Stack trace:', new Error().stack);
             const company = document.getElementById('company').value.trim();
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
@@ -199,7 +195,7 @@
 
                 const qAnswers = [], qCorrect = [];
                 let hasCorrect = false;
-                let answerCount = 0; // Compteur de propositions remplies
+                let answerCount = 0;
 
                 for (let j = 1; j <= 8; j++) {
                     const answer = document.getElementById(`q${i}a${j}`).value.trim();
@@ -208,50 +204,22 @@
                     qCorrect.push(isCorrect ? 'OUI' : 'NON');
                     
                     if (isCorrect) hasCorrect = true;
-                    if (answer) answerCount++; // On compte les propositions non vides
+                    if (answer) answerCount++;
                 }
 
-                // NOUVELLE VÉRIFICATION : Au moins 3 propositions
                 if (answerCount < 3) {
                     alert(`⚠️ La question ${i} doit contenir au moins 3 propositions. (Actuellement : ${answerCount})`);
                     return;
                 }
 
-                // VÉRIFICATION EXISTANTE : Au moins 1 bonne réponse
                 if (!hasCorrect) {
-                    alert(`️ Vous devez cocher au moins une bonne réponse pour la question ${i}`);
+                    alert(`⚠️ Vous devez cocher au moins une bonne réponse pour la question ${i}`);
                     return;
                 }
 
                 answers.push(qAnswers);
                 correctAnswers.push(qCorrect);
             }
-
-            const data = {
-                token: editToken || generateToken(),
-                timestamp: new Date().toISOString(),
-                action: isEditMode ? 'update' : 'create',
-                company: document.getElementById('company').value.trim(),
-                firstname: document.getElementById('firstname').value.trim(),
-                lastname: document.getElementById('lastname').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                questions, answers, correctAnswers
-            };
-
-            document.getElementById('questions-section').classList.add('hidden');
-            document.getElementById('loading-section').classList.remove('hidden');
-
-            try {
-                await saveData(data);
-                document.getElementById('loading-section').classList.add('hidden');
-                document.getElementById('success-section').classList.remove('hidden');
-                editToken = data.token;
-            } catch (error) {
-                document.getElementById('loading-section').classList.add('hidden');
-                document.getElementById('questions-section').classList.remove('hidden');
-                document.getElementById('message-container').innerHTML = `<div class="error-message"><h3>❌ Erreur</h3><p>${error.message}</p></div>`;
-            }
-        }
 
             const data = {
                 token: editToken || generateToken(),
@@ -297,13 +265,11 @@
                 if (!result.success) throw new Error(result.error || 'Token non trouvé');
                 const data = result.data;
                 
-                // 1. Remplir les champs d'identification
                 document.getElementById('company').value = data.company || '';
                 document.getElementById('firstname').value = data.firstname || '';
                 document.getElementById('lastname').value = data.lastname || '';
                 document.getElementById('email').value = data.email || '';
         
-                // 2. Pré-remplir les questions en arrière-plan (pour quand on cliquera sur "Continuer")
                 for (let i = 1; i <= 4; i++) {
                     initAnswers(i);
                     if (data.questions && data.questions[i-1]) {
@@ -321,9 +287,8 @@
                     }
                 }
         
-                // 3. ✅ CORRECTION : RESTER SUR LA PAGE D'IDENTIFICATION
-                document.getElementById('identification-section').classList.remove('hidden'); // On AFFICHE la page de garde
-                document.getElementById('questions-section').classList.add('hidden');         // On CACHE les questions
+                document.getElementById('identification-section').classList.remove('hidden');
+                document.getElementById('questions-section').classList.add('hidden');
                 
             } catch (error) {
                 console.error('Erreur:', error);
