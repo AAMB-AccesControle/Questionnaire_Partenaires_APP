@@ -41,7 +41,7 @@
     <div class="container">
         <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.0.22</h1>
+            <h1>📋 Questionnaire d'Évaluation v.0.23</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
@@ -53,9 +53,18 @@
                 <div class="form-group"><label for="email">Adresse email *</label><input type="email" id="email" required></div>
                 <button class="btn" onclick="showQuestions()">Continuer →</button>
             </div>
-
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
+                
+                <!-- INSTRUCTION AJOUTÉE -->
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; color: #856404;">
+                        <strong> Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
+                        Plusieurs propositions peuvent être correctes pour une même question.
+                    </p>
+                </div>
+                <!-- FIN INSTRUCTION -->
+                
                 <div class="question-section">
                     <h3>Question 1</h3>
                     <textarea class="question-input" id="q1" placeholder="Saisissez votre question..."></textarea>
@@ -91,7 +100,6 @@
                     <p>Vos réponses ont été enregistrées avec succès.</p>
                     <p>Un email de confirmation vous a été envoyé.</p>
                 </div>
-                <button class="btn" onclick="resetForm()">Nouveau questionnaire</button>
             </div>
         </div>
     </div>
@@ -154,7 +162,7 @@
             for (let i = 1; i <= 8; i++) {
                 const div = document.createElement('div');
                 div.className = 'answer-item';
-                div.innerHTML = `<input type="checkbox" id="q${questionNum}a${i}_check" title="Bonne réponse"><input type="text" id="q${questionNum}a${i}" placeholder="Proposition ${i}"><label for="q${questionNum}a${i}_check">Bonne réponse</label>`;
+                div.innerHTML = `<input type="checkbox" id="q${questionNum}a${i}_check" title="Cochez si c'est une bonne réponse"><input type="text" id="q${questionNum}a${i}" placeholder="Proposition ${i}">`;
                 container.appendChild(div);
             }
         }
