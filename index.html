@@ -41,7 +41,7 @@
     <div class="container">
         <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.0.21</h1>
+            <h1>📋 Questionnaire d'Évaluation v.0.22</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
@@ -242,27 +242,36 @@
                 if (!result.success) throw new Error(result.error || 'Token non trouvé');
                 const data = result.data;
                 
+                // 1. Remplir les champs d'identification
                 document.getElementById('company').value = data.company || '';
                 document.getElementById('firstname').value = data.firstname || '';
                 document.getElementById('lastname').value = data.lastname || '';
                 document.getElementById('email').value = data.email || '';
-
+        
+                // 2. Pré-remplir les questions en arrière-plan (pour quand on cliquera sur "Continuer")
                 for (let i = 1; i <= 4; i++) {
                     initAnswers(i);
-                    if (data.questions && data.questions[i-1]) document.getElementById(`q${i}`).value = data.questions[i-1];
+                    if (data.questions && data.questions[i-1]) {
+                        document.getElementById(`q${i}`).value = data.questions[i-1];
+                    }
                     if (data.answers && data.answers[i-1]) {
                         for (let j = 1; j <= 8; j++) {
-                            if (data.answers[i-1][j-1]) document.getElementById(`q${i}a${j}`).value = data.answers[i-1][j-1];
+                            if (data.answers[i-1][j-1]) {
+                                document.getElementById(`q${i}a${j}`).value = data.answers[i-1][j-1];
+                            }
                             if (data.correctAnswers && data.correctAnswers[i-1] && data.correctAnswers[i-1][j-1] === 'OUI') {
                                 document.getElementById(`q${i}a${j}_check`).checked = true;
                             }
                         }
                     }
                 }
-                document.getElementById('identification-section').classList.add('hidden');
-                document.getElementById('questions-section').classList.remove('hidden');
-                document.getElementById('message-container').innerHTML = `<div class="success-message"><h3>📝 Mode Édition</h3><p>Modifiez et validez pour mettre à jour.</p></div>`;
+        
+                // 3. ✅ CORRECTION : RESTER SUR LA PAGE D'IDENTIFICATION
+                document.getElementById('identification-section').classList.remove('hidden'); // On AFFICHE la page de garde
+                document.getElementById('questions-section').classList.add('hidden');         // On CACHE les questions
+                
             } catch (error) {
+                console.error('Erreur:', error);
                 alert('Erreur: ' + error.message);
                 for (let i = 1; i <= 4; i++) initAnswers(i);
             }
