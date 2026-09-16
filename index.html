@@ -124,12 +124,23 @@
             margin: 0 auto 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .test-mode-banner {
+            background: #ff9800;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div id="test-banner" class="test-mode-banner hidden">
+            🧪 MODE TEST - Champs pré-remplis automatiquement
+        </div>
+        
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.1.02</h1>
+            <h1>📋 Questionnaire d'Évaluation 1.001</h1>
             <p>Complétez le questionnaire ci-dessous</p>
         </div>
 
@@ -202,23 +213,78 @@
     </div>
 
     <script>
-        // ⚠️ REMPLACEZ CETTE URL PAR CELLE DE VOTRE GOOGLE APPS SCRIPT DÉPLOYÉ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcTlncMVRasvVHpkFaIqUwl0V65_qc8gE09PMYcis7YiEmGyJMU8BaqqeNVYjxDhRazw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz07OVI31VRt9ohBzXpgnzl2YsnqaDGAATFMiXobBRUwaf-nQq4iwWHPFJO9WwLhI-KDw/exec';
         
         let editToken = '';
         let isEditMode = false;
+        let isTestMode = false;
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             editToken = urlParams.get('token');
             
+            // Mode test : pré-remplir automatiquement
+            if (urlParams.get('test') === '1') {
+                isTestMode = true;
+                document.getElementById('test-banner').classList.remove('hidden');
+                fillTestData();
+            }
+            
             if (editToken) {
                 isEditMode = true;
                 loadExistingData(editToken);
-            } else {
+            } else if (!isTestMode) {
                 for (let i = 1; i <= 4; i++) initAnswers(i);
             }
         };
+
+        function fillTestData() {
+            // Remplir les champs d'identification
+            document.getElementById('company').value = 'Société Test SARL';
+            document.getElementById('firstname').value = 'Jean';
+            document.getElementById('lastname').value = 'Dupont';
+            document.getElementById('email').value = 'test@example.com';
+            
+            // Questions pré-remplies
+            const testQuestions = [
+                'Quelle est la capitale de la France ?',
+                'Combien font 2 + 2 ?',
+                'Quel est le plus grand océan du monde ?',
+                'Qui a peint la Joconde ?'
+            ];
+            
+            // Réponses pré-remplies (avec les bonnes réponses indiquées)
+            const testAnswers = [
+                { answers: ['Paris', 'Lyon', 'Marseille'], correct: [0, 1, 2] }, // Paris = bonne
+                { answers: ['3', '4', '5'], correct: [1, 2, 3] }, // 4 = bonne
+                { answers: ['Atlantique', 'Pacifique', 'Indien', 'Arctique'], correct: [0, 1, 2, 3] }, // Pacifique = bonne
+                { answers: ['Van Gogh', 'Léonard de Vinci', 'Picasso'], correct: [0, 1, 2] } // Léonard de Vinci = bonne
+            ];
+            
+            // Remplir les questions et réponses
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`q${i}`).value = testQuestions[i-1];
+                initAnswers(i);
+                
+                const container = document.getElementById(`answers${i}`);
+                const data = testAnswers[i-1];
+                
+                for (let j = 0; j < 8; j++) {
+                    if (j < data.answers.length) {
+                        const input = container.children[j].querySelector('input[type="text"]');
+                        const checkbox = container.children[j].querySelector('input[type="checkbox"]');
+                        
+                        input.value = data.answers[j];
+                        checkbox.checked = data.correct.includes(j);
+                    }
+                }
+            }
+            
+            // Passer directement aux questions
+            setTimeout(() => {
+                showQuestions();
+            }, 500);
+        }
 
         function initAnswers(questionNum) {
             const container = document.getElementById(`answers${questionNum}`);
@@ -335,8 +401,6 @@
                 body: JSON.stringify(data)
             });
             
-            // En mode no-cors, on ne peut pas lire la réponse
-            // On considère que c'est OK si pas d'exception
             return true;
         }
 
@@ -376,7 +440,7 @@
                 document.getElementById('questions-section').classList.remove('hidden');
                 document.getElementById('message-container').innerHTML = `
                     <div class="success-message">
-                        <h3>📝 Mode Édition</h3>
+                        <h3> Mode Édition</h3>
                         <p>Modifiez et validez pour mettre à jour.</p>
                     </div>
                 `;
