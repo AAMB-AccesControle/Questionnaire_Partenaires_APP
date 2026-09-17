@@ -3,15 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionnaire d'Évaluation</title>
+    <title>Formulaire QCM partenaire - AAMB JTB 2026</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#667eea">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        
+        /* FOND DE PAGE EN DÉGRADÉ DE GRIS */
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+            overflow: hidden; 
+        }
+        
+        /* HEADER CONSERVÉ EN BLEU/VIOLET */
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        
+        .header-top {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            max-height: 100px;
+            width: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .header h1 { 
+            font-size: 2em; 
+            margin-bottom: 10px; 
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .header-subtitle {
+            font-size: 1em;
+            margin-top: 15px;
+            line-height: 1.5;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
         .content { padding: 40px; }
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
@@ -35,14 +102,40 @@
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .test-banner { background: #ff9800; color: white; padding: 10px; text-align: center; font-weight: bold; display: none; }
+
+        /* Responsive pour mobile */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+            }
+            .logo {
+                max-height: 80px;
+            }
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div id="test-banner" class="test-banner">🧪 MODE TEST : Champs pré-remplis automatiquement pour gagner du temps</div>
+        
         <div class="header">
-            <h1>📋 Questionnaire d'Évaluation v.0.28</h1>
-            <p>Complétez le questionnaire ci-dessous</p>
+            <!-- NOUVEL EN-TÊTE -->
+            <div class="header-top">AAMB - JTB 2026 - Besançon</div>
+            
+            <!-- LOGO + TITRE -->
+            <div class="header-content">
+                <!-- IMPORTANT : Remplacez 'logo-aamb.png' par le chemin réel de votre logo -->
+                <img src="logo-aamb.png" alt="Logo AAMB" class="logo">
+                <h1>📋 Formulaire QCM partenaire</h1>
+            </div>
+            
+            <!-- NOUVEAU TEXTE EXPLICATIF -->
+            <div class="header-subtitle">
+                <strong>Rappel :</strong> Ce formulaire a pour but de nous aider à réaliser un questionnaire d'évaluation des participants, et pour vous d'augmenter significativement la fréquentation de votre stand pour y trouver les réponses. Vous pouvez proposer tout type de question : sur de la réglementation, sur un de vos produits/services, sur votre entreprise....
+            </div>
         </div>
 
         <div class="content">
@@ -57,14 +150,12 @@
             <div id="questions-section" class="hidden">
                 <div id="message-container"></div>
                 
-                <!-- INSTRUCTION MISE À JOUR -->
                 <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
                     <p style="margin: 0; color: #856404;">
                         <strong>📝 Comment remplir :</strong> Cochez les cases pour indiquer les bonnes réponses. 
                         <br><strong>⚠️ Règles obligatoires :</strong> Chaque question doit contenir <u>au moins 3 propositions</u> et <u>au moins 1 bonne réponse cochée parmi les propositions saisies</u>.
                     </p>
                 </div>
-                <!-- FIN INSTRUCTION -->
                 
                 <div class="question-section">
                     <h3>Question 1</h3>
@@ -130,7 +221,6 @@
             document.getElementById('lastname').value = 'Dupont';
             document.getElementById('email').value = 'sedric.blin@aamb.asso.fr';
             
-            // Test data avec exactement 3 propositions et 1 coche par question pour valider la règle
             const testQuestions = ['Capitale de la France ?', '2 + 2 = ?', 'Plus grand océan ?', 'Peintre de la Joconde ?'];
             const testAnswers = [
                 { ans: ['Paris', 'Lyon', 'Marseille'], corr: [true, false, false] },
@@ -202,23 +292,19 @@
                     qAnswers.push(answer);
                     qCorrect.push(isCorrect ? 'OUI' : 'NON');
                     
-                    // On ne compte que si la proposition est remplie
                     if (answer) {
                         filledCount++;
-                        // Et on vérifie si SA case correspondante est cochée
                         if (isCorrect) {
                             checkedFilledCount++;
                         }
                     }
                 }
 
-                // Règle 1 : Au moins 3 propositions remplies
                 if (filledCount < 3) {
                     alert(`⚠️ La question ${i} doit contenir au moins 3 propositions. (Actuellement : ${filledCount})`);
                     return;
                 }
 
-                // Règle 2 : Au moins 1 case cochée PARMI les propositions remplies
                 if (checkedFilledCount === 0) {
                     alert(`⚠️ Vous devez cocher au moins une bonne réponse parmi les propositions que vous avez saisies pour la question ${i}.`);
                     return;
