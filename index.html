@@ -104,15 +104,58 @@
         .test-banner { background: #ff9800; color: white; padding: 10px; text-align: center; font-weight: bold; display: none; }
 
         /* Responsive pour mobile */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.4em;
+            }
+            
             .header-content {
                 flex-direction: column;
+                gap: 15px;
             }
+            
             .logo {
-                max-height: 80px;
+                max-height: 70px;
             }
-            .header h1 {
-                font-size: 1.5em;
+            
+            .header-subtitle {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .question-section {
+                padding: 15px;
+            }
+            
+            .answer-item {
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .answer-item input[type="text"] {
+                min-width: 0;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1em;
             }
         }
     </style>
@@ -134,7 +177,7 @@
             
             <!-- NOUVEAU TEXTE EXPLICATIF -->
             <div class="header-subtitle">
-                Ce formulaire sera utilisé comme <strong>jeu-concours</strong> lors du JTB 2026. Les visiteurs viendront sur votre stand pour trouver les réponses : un levier efficace pour <strong>augmenter votre fréquentation</strong> et <strong>valoriser votre expertise</strong>.
+                Ce formulaire sera utilisé comme <strong>jeu-concours</strong> lors du JTB 2026. Les participants viendront nécessairement sur votre stand pour y trouver les réponses. Cela <strong>augmentera significativement la fréquentation de votre stand</strong>.
                 <br><br>
                 <strong>Thématiques libres :</strong> la réglementation, vos produits, vos services, votre entreprise, les innovations...
             </div>
